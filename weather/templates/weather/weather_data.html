@@ -1,0 +1,87 @@
+<html>
+
+<head>
+	<title>Weather Data</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<style>
+	canvas{
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	</style>
+</head>
+
+<body>
+	<div style="width:90%;">
+        <canvas id="canvas"></canvas>
+    </div>
+
+	<script>
+		var randomScalingFactor = function() {
+			return Math.round(Math.random() * 100);
+		};
+		var chartColors = ['rgb(255, 99, 132)','rgb(255, 159, 64)','rgb(255, 205, 86)','rgb(75, 192, 192)','rgb(54, 162, 235)','rgb(153, 102, 255)','rgb(201, 203, 207)']
+		window.onload = function() {
+            var data = "{{content}}"
+            data = JSON.parse(data.replace(/&quot;/g,'"'));
+            var cities = Object.keys(data)
+            var datasets = []
+
+            for (var city in cities){
+                color = chartColors[city]
+                city = cities[city]
+                var years = Object.keys(data[city])
+                for (var year in years){
+                    year = years[year]
+                    var months = Object.keys(data[city][year])
+                    var horizontal_labels = []
+                    var vertical_labels = []
+                    for (var month in months){
+                        month = months[month]
+                        horizontal_labels.push(month)
+                        var data_point = data[city][year][month]
+                        vertical_labels.push(data_point)
+                    }
+                    var sorted_months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+                    var sorted_averages = []
+                    var arrayLength = sorted_months.length;
+                    for (var i = 0; i < arrayLength; i++) {
+                        month = sorted_months[i];
+                        idx = horizontal_labels.indexOf(month)
+                        sorted_averages.push(vertical_labels[idx])
+                    }
+                    datasets.push({
+                        label: city,
+                        fill: false,
+                        backgroundColor: color,
+                        borderColor: color,
+                        data: sorted_averages
+                    })
+                }
+            }
+
+            var configs = {
+                type: 'line',
+                data: {
+                    labels: sorted_months,
+                    datasets: datasets,
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Weather Data'
+                    },
+                }
+            };
+            var ctx = document.getElementById('canvas').getContext('2d');
+            window.myLine = new Chart(ctx, configs);
+
+        };
+ 
+	</script>
+</body>
+
+</html>
