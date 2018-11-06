@@ -1,0 +1,5 @@
+Django
+numpy
+boto3
+gunicorn==19.6.0
+
