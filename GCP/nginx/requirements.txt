@@ -1,0 +1,4 @@
+Django
+numpy
+gunicorn==19.6.0
+google-cloud-datastore==1.7.0

@@ -1,0 +1,9 @@
+# runtime: custom
+# env: flex
+
+runtime: custom
+api_version: 1
+threadsafe: yes
+env: flex
+entrypoint: gunicorn -b :$PORT mydjangoapp.wsgi
+
